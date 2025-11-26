@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
+const Authuser = require("../models/Authuser");
 
 // Level 2
 
@@ -14,6 +15,30 @@ router.get("/login", (req, res) => {
 
 router.get("/signup", (req, res) => {
   res.render("auth/signup");
+});
+
+/* 
+-----old version
+router.post("/signup", (req, res) => {
+  Authuser.create(req.body)
+    .then((result) => {
+      console.log(result);
+      res.redirect("/login");
+    })
+    .catch((err) => {
+      console.log(err);
+    });   
+}); 
+*/
+// New version with async await
+router.post("/signup", async (req, res) => {
+  try {
+    const result = await Authuser.create(req.body);
+    console.log(result);
+    res.redirect("/login");
+  } catch (error) {
+    console.log(error);
+  }
 });
 // GET Requst
 
