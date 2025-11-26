@@ -3,6 +3,7 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const Authuser = require("../models/Authuser");
 const bcrypt = require("bcrypt");
+var jwt = require("jsonwebtoken");
 
 // Level 2
 
@@ -54,6 +55,9 @@ router.post("/login", async (req, res) => {
       );
       if (match) {
         console.log("email found in DB & Password match status:", match);
+        var token = jwt.sign({ id: loginUser._id }, "shhhhh");
+        res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
+        res.redirect("/home");
       } else {
         console.log("Password match status:", match);
       }
