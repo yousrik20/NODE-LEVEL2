@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
 const Authuser = require("../models/Authuser");
+const bcrypt = require("bcrypt");
 
 // Level 2
 
@@ -35,6 +36,28 @@ router.post("/signup", async (req, res) => {
   try {
     const result = await Authuser.create(req.body);
     console.log(result);
+    res.redirect("/login");
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.post("/login", async (req, res) => {
+  try {
+    const loginUser = await Authuser.findOne({ email: req.body.email });
+    if (loginUser == null) {
+      console.log("this email is not found in DB");
+    } else {
+      const match = await await bcrypt.compare(
+        req.body.password,
+        loginUser.password
+      );
+      if (match) {
+        console.log("email found in DB & Password match status:", match);
+      } else {
+        console.log("Password match status:", match);
+      }
+    }
     res.redirect("/login");
   } catch (error) {
     console.log(error);
