@@ -4,30 +4,18 @@ const userController = require("../controllers/userController");
 const Authuser = require("../models/Authuser");
 const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
-var requireAuth = require("../middleware/middleware");
+var {requireAuth} = require("../middleware/middleware");
+const {checkIfUser} = require("../middleware/middleware");
 // Level 2
 
-const checkIfUser = (req, res, next) => {
-  const token = req.cookies.jwt;
-  if (token) {
-    jwt.verify(token, "shhhhh",async (err, decoded) => {
-      if (err) {
-        res.locals.user = null;
-        next();
-      } else {
-        const loginUser=await Authuser.findById(decoded.id)
-        res.locals.user = loginUser;
-        next();
-      }
-    });
-  } else {
-    res.locals.user = null;
-    next();
-  }
-};
+
 router.get("*",checkIfUser);
  
 
+router.get("/signout", (req, res) => {
+  res.cookie("jwt", "", { maxAge: 1 });
+  res.redirect("/");
+});
 router.get("/", (req, res) => {
   res.render("welcome");
 });
@@ -56,6 +44,12 @@ router.post("/signup", (req, res) => {
 // New version with async await
 router.post("/signup", async (req, res) => {
   try {
+    const isCurrentEmail=await Authuser.findOne({email: req.body.email});
+    console.log(isCurrentEmail);
+    if(isCurrentEmail){
+      return console.log("this email already used, please use another email");
+    
+    }  
     const result = await Authuser.create(req.body);
     console.log(result);
     res.redirect("/login");
