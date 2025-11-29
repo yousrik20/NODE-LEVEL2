@@ -55,17 +55,18 @@ router.post(
     try {
       const objError = validationResult(req);
       if (objError.errors.length > 0) {
-        return console.log("invalid email OR invalid password");
+        return res.json({ arrValidationError: objError.errors });
       }
 
       const isCurrentEmail = await Authuser.findOne({ email: req.body.email });
       console.log(isCurrentEmail);
       if (isCurrentEmail) {
-        return console.log("this email already used, please use another email");
+        return res.json({ existEmail: "this email already used" });
       }
-      const result = await Authuser.create(req.body);
-      console.log(result);
-      res.redirect("/login");
+      const newUser = await Authuser.create(req.body);
+      var token = jwt.sign({ id: newUser._id }, "shhhhh");
+      res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
+      res.json({ id: newUser._id });
     } catch (error) {
       console.log(error);
     }

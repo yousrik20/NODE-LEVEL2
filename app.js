@@ -15,6 +15,7 @@ const addUserRoutes = require("./routes/addUser.js");
 var cookieParser = require('cookie-parser')
 app.use(cookieParser())
 
+app.use(express.json())
 
 // auto refresh to apply static file changes CSS, JS, IMG...
 

@@ -143,7 +143,7 @@
       <main class="px-3">
         <h1>Sign up</span></h1>
 
-        <form method="post" action="/signup" style="max-width: 22em;" class="text-start mx-auto mt-5">
+        <form id="signupForm" method="post" action="/signup" style="max-width: 22em;" class="text-start mx-auto mt-5">
           <div class="mb-3">
             <label for="exampleInputUsername" class="form-label">Username :</label>
             <input type="text" name="username" class="form-control" id="exampleInputUsername"
@@ -168,6 +168,34 @@
         <p>Designed and Developed by Youssri Salem. &copy; 2025</p>
       </footer>
   </div>
+  <script>
+    const form = document.getElementById("signupForm");
+    signupForm.addEventListener("submit",  async (e)=> {
+      e.preventDefault(); // Prevent the default form submission
+
+      const res=await fetch("/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: exampleInputEmail1.value,
+          password: exampleInputPassword1.value,
+        }),
+      });
+      const data=await res.json();
+      if(data.arrValidationError){
+      console.log(data.arrValidationError);
+      }
+      if(data.existEmail){
+        console.log(data.existEmail);
+      }
+      if(data.id){
+        console.log("User created with ID:", data.id);
+        window.location.assign("/home");
+      }
+    });
+  </script>
   <script src="./js/bootstrap.bundle.min.js"></script>
 </body>
 
