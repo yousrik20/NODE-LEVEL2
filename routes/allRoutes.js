@@ -4,13 +4,13 @@ const userController = require("../controllers/userController");
 const Authuser = require("../models/Authuser");
 const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
-var {requireAuth} = require("../middleware/middleware");
-const {checkIfUser} = require("../middleware/middleware");
+var { requireAuth } = require("../middleware/middleware");
+const { checkIfUser } = require("../middleware/middleware");
+const { check, validationResult } = require("express-validator");
+
 // Level 2
 
-
-router.get("*",checkIfUser);
- 
+router.get("*", checkIfUser);
 
 router.get("/signout", (req, res) => {
   res.cookie("jwt", "", { maxAge: 1 });
@@ -42,21 +42,35 @@ router.post("/signup", (req, res) => {
 }); 
 */
 // New version with async await
-router.post("/signup", async (req, res) => {
-  try {
-    const isCurrentEmail=await Authuser.findOne({email: req.body.email});
-    console.log(isCurrentEmail);
-    if(isCurrentEmail){
-      return console.log("this email already used, please use another email");
-    
-    }  
-    const result = await Authuser.create(req.body);
-    console.log(result);
-    res.redirect("/login");
-  } catch (error) {
-    console.log(error);
+router.post(
+  "/signup",
+  [
+    check("email", "Please provide a valid email").isEmail(),
+    check(
+      "password",
+      "Password must be at least 8 characters with 1 upper case letter and 1 number"
+    ).matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/),
+  ],
+  async (req, res) => {
+    try {
+      const objError = validationResult(req);
+      if (objError.errors.length > 0) {
+        return console.log("invalid email OR invalid password");
+      }
+
+      const isCurrentEmail = await Authuser.findOne({ email: req.body.email });
+      console.log(isCurrentEmail);
+      if (isCurrentEmail) {
+        return console.log("this email already used, please use another email");
+      }
+      const result = await Authuser.create(req.body);
+      console.log(result);
+      res.redirect("/login");
+    } catch (error) {
+      console.log(error);
+    }
   }
-});
+);
 
 router.post("/login", async (req, res) => {
   try {
