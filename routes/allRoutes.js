@@ -4,8 +4,29 @@ const userController = require("../controllers/userController");
 const Authuser = require("../models/Authuser");
 const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
-
+var requireAuth = require("../middleware/middleware");
 // Level 2
+
+const checkIfUser = (req, res, next) => {
+  const token = req.cookies.jwt;
+  if (token) {
+    jwt.verify(token, "shhhhh",async (err, decoded) => {
+      if (err) {
+        res.locals.user = null;
+        next();
+      } else {
+        const loginUser=await Authuser.findById(decoded.id)
+        res.locals.user = loginUser;
+        next();
+      }
+    });
+  } else {
+    res.locals.user = null;
+    next();
+  }
+};
+router.get("*",checkIfUser);
+ 
 
 router.get("/", (req, res) => {
   res.render("welcome");
@@ -69,11 +90,11 @@ router.post("/login", async (req, res) => {
 });
 // GET Requst
 
-router.get("/home", userController.user_index_get);
+router.get("/home", requireAuth, userController.user_index_get);
 
-router.get("/edit/:id", userController.user_edit_get);
+router.get("/edit/:id", requireAuth, userController.user_edit_get);
 
-router.get("/view/:id", userController.user_view_get);
+router.get("/view/:id", requireAuth, userController.user_view_get);
 
 router.post("/search", userController.user_search_post);
 

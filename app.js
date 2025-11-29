@@ -11,6 +11,11 @@ app.use(methodOverride("_method"));
 const allRoutes = require("./routes/allRoutes.js");
 const addUserRoutes = require("./routes/addUser.js");
 
+// cookie parser middleware
+var cookieParser = require('cookie-parser')
+app.use(cookieParser())
+
+
 // auto refresh to apply static file changes CSS, JS, IMG...
 
 //const path = require("path");
