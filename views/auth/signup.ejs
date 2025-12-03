@@ -133,6 +133,11 @@
     .bd-mode-toggle .dropdown-menu .active .bi {
       display: block !important;
     }
+    #emailError, #passwordError {
+      color: #ff5d79;
+     margin-left: 0.4rem;
+     font-weight: 800;
+    }
   </style>
 </head>
 
@@ -152,10 +157,12 @@
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Email address :</label>
             <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <p id="emailError"></p>
           </div>
           <div class="mb-3">
             <label for="exampleInputPassword1" class="form-label">Password :</label>
             <input type="password" name="password" class="form-control" id="exampleInputPassword1">
+            <p id="passwordError"></p>
           </div>
           <div class="mb-3 form-check">
             <input type="checkbox" class="form-check-input" id="exampleCheck1">
@@ -172,7 +179,8 @@
     const form = document.getElementById("signupForm");
     signupForm.addEventListener("submit",  async (e)=> {
       e.preventDefault(); // Prevent the default form submission
-
+      emailError.textContent="";
+      passwordError.textContent="";
       const res=await fetch("/signup", {
         method: "POST",
         headers: {
@@ -186,9 +194,18 @@
       const data=await res.json();
       if(data.arrValidationError){
       console.log(data.arrValidationError);
+      data.arrValidationError.forEach(item => {
+        if(item.path==="email"){
+          emailError.textContent=item.msg;
+        }
+        if(item.path==="password"){
+          passwordError.textContent=item.msg;
+        }
+      });
       }
       if(data.existEmail){
         console.log(data.existEmail);
+        emailError.textContent="Email already exists. Please use another email.";
       }
       if(data.id){
         console.log("User created with ID:", data.id);
