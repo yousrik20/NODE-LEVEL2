@@ -37,7 +37,7 @@ const post_signup= async (req, res) => {
       }
       // create new user and login
       const newUser = await Authuser.create(req.body);
-      var token = jwt.sign({ id: newUser._id }, "shhhhh");
+      var token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET_KEY);
       res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
       res.json({ id: newUser._id });
     } catch (error) {
@@ -57,7 +57,7 @@ const post_login= async (req, res) => {
       );
       if (match) {
         console.log("email found in DB & Password match status:", match);
-        var token = jwt.sign({ id: loginUser._id }, "shhhhh");
+        var token = jwt.sign({ id: loginUser._id }, process.env.JWT_SECRET_KEY);
         res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
         res.json({ id: loginUser._id });
       } else {

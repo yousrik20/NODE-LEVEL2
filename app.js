@@ -11,9 +11,11 @@ app.use(methodOverride("_method"));
 const allRoutes = require("./routes/allRoutes.js");
 const addUserRoutes = require("./routes/addUser.js");
 
+
 // cookie parser middleware
 var cookieParser = require('cookie-parser')
 app.use(cookieParser())
+require("dotenv").config();
 
 app.use(express.json())
 
@@ -37,7 +39,7 @@ app.use(express.json())
 // Database part
 mongoose
   .connect(
-    "mongodb+srv://yousrike13_db_user:n9dgHsnEiJNT0xP0@cluster0.wezwbsz.mongodb.net/all-data?appName=Cluster0"
+   process.env.MONGODB_URL
   )
   .then(() => {
     app.listen(port, () => {
