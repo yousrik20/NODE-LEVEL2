@@ -53,16 +53,18 @@ router.post(
   ],
   async (req, res) => {
     try {
+      // check validation object for errors
       const objError = validationResult(req);
       if (objError.errors.length > 0) {
         return res.json({ arrValidationError: objError.errors });
       }
-
+      // check if email already exists
       const isCurrentEmail = await Authuser.findOne({ email: req.body.email });
       console.log(isCurrentEmail);
       if (isCurrentEmail) {
         return res.json({ existEmail: "this email already used" });
       }
+      // create new user and login
       const newUser = await Authuser.create(req.body);
       var token = jwt.sign({ id: newUser._id }, "shhhhh");
       res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
@@ -77,7 +79,7 @@ router.post("/login", async (req, res) => {
   try {
     const loginUser = await Authuser.findOne({ email: req.body.email });
     if (loginUser == null) {
-      console.log("this email is not found in DB");
+      res.json({notFoundEmail: "this email is not found in DB"});
     } else {
       const match = await await bcrypt.compare(
         req.body.password,
@@ -87,13 +89,12 @@ router.post("/login", async (req, res) => {
         console.log("email found in DB & Password match status:", match);
         var token = jwt.sign({ id: loginUser._id }, "shhhhh");
         res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
-        res.redirect("/home");
+        res.json({ id: loginUser._id });
       } else {
-        console.log("Password match status:", match);
+        res.json({ passwordError: "password is incorrect" });
       }
     }
-    res.redirect("/login");
-  } catch (error) {
+  } catch (error) { 
     console.log(error);
   }
 });

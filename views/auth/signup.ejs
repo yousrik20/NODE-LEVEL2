@@ -133,11 +133,7 @@
     .bd-mode-toggle .dropdown-menu .active .bi {
       display: block !important;
     }
-    #emailError, #passwordError {
-      color: #ff5d79;
-     margin-left: 0.4rem;
-     font-weight: 800;
-    }
+    
   </style>
 </head>
 
@@ -187,6 +183,7 @@
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          username: exampleInputUsername.value,
           email: exampleInputEmail1.value,
           password: exampleInputPassword1.value,
         }),

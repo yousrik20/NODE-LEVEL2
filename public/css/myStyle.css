@@ -1,3 +1,9 @@
+#emailError, #passwordError {
+      color: #ff5d79;
+     margin-left: 0.4rem;
+     font-weight: 800;
+    }
+
 .bi-lightning-charge::before{
   margin-right: 1rem;
   font-size: 1.9rem;

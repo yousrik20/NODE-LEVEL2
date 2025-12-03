@@ -143,14 +143,16 @@
       <main class="px-3">
         <h1>Log in</span></h1>
 
-        <form action="/login" method="post" style="max-width: 22em;" class="text-start mx-auto mt-5">
+        <form id="signupForm" style="max-width: 22em;" class="text-start mx-auto mt-5">
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Email address</label>
             <input name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <p id="emailError"></p>
           </div>
           <div class="mb-3">
             <label for="exampleInputPassword1" class="form-label">Password</label>
             <input name="password" type="password" class="form-control" id="exampleInputPassword1">
+            <p id="passwordError"></p>
           </div>
           <div class="mb-3 form-check">
             <input type="checkbox" class="form-check-input" id="exampleCheck1">
@@ -163,6 +165,34 @@
         <p>Designed and Developed by Youssri Salem. &copy; 2025</p>
       </footer>
   </div>
+  <script>
+    const form = document.getElementById("signupForm");
+    signupForm.addEventListener("submit",  async (e)=> {
+      e.preventDefault(); // Prevent the default form submission
+      emailError.textContent="";
+      passwordError.textContent="";
+      const res=await fetch("/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: exampleInputEmail1.value,
+          password: exampleInputPassword1.value,
+        }),
+      });
+      const data=await res.json();
+      if(data.notFoundEmail){
+        emailError.textContent=data.notFoundEmail;
+      }
+      if(data.id){
+        location.assign("/home");
+      } 
+      if(data.passwordError){
+        passwordError.textContent=data.passwordError;
+      }
+    });
+  </script>
   <script src="./js/bootstrap.bundle.min.js"></script>
 </body>
 
