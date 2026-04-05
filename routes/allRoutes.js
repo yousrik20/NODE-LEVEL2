@@ -10,6 +10,8 @@ const authController = require("../controllers/authController");
 // Level 2
 
 router.get("*", checkIfUser);
+router.post("*", checkIfUser);
+
 
 router.get("/signout", authController.get_signout);
 
