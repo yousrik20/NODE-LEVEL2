@@ -12,6 +12,17 @@ const authController = require("../controllers/authController");
 router.get("*", checkIfUser);
 router.post("*", checkIfUser);
 
+// Level 3
+const multer = require("multer");
+const upload = multer({ storage: multer.diskStorage({}) });
+
+
+// LEVEL 3
+router.post(
+  "/update-profile",
+  upload.single("avatar"),
+  authController.post_profileImg,
+);
 
 router.get("/signout", authController.get_signout);
 
@@ -40,10 +51,10 @@ router.post(
     check("email", "Please provide a valid email").isEmail(),
     check(
       "password",
-      "Password must be at least 8 characters with 1 upper case letter and 1 number"
+      "Password must be at least 8 characters with 1 upper case letter and 1 number",
     ).matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/),
   ],
-  authController.post_signup
+  authController.post_signup,
 );
 
 router.post("/login", authController.post_login);

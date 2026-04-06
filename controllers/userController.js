@@ -15,11 +15,25 @@ const user_index_get = (req, res) => {
     });
 };
 
+// done
 const user_post = (req, res) => {
   var decoded = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET_KEY);
-  console.log("*******************************");
+  console.log("========================================");
   console.log(req.body);
-  AuthUser.updateOne({ _id: decoded.id }, { $push: { customerInfo: req.body } })
+
+  AuthUser.updateOne({ _id: decoded.id }, { $push: 
+    { customerInfo: {
+      fireName: req.body.fireName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      phoneNumber: req.body.phoneNumber,
+      age: req.body.age,
+      country: req.body.country,
+      gender: req.body.gender,
+      createdAt: new Date()
+    } } 
+  
+  })
     .then(() => {
       res.redirect("/home");
     })
@@ -27,6 +41,36 @@ const user_post = (req, res) => {
       console.log(err);
     });
 };
+
+
+
+// done
+// /edit/:id
+const user_put = (req, res) => {
+  console.log("********************************************")
+  console.log(req.body)
+  AuthUser.updateOne(
+    { "customerInfo._id": req.params.id },
+    { "customerInfo.$.fireName": req.body.fireName,
+    "customerInfo.$.lastName": req.body.lastName,
+    "customerInfo.$.email": req.body.email,
+    "customerInfo.$.phoneNumber": req.body.phoneNumber,
+    "customerInfo.$.age": req.body.age,
+    "customerInfo.$.country": req.body.country,
+    "customerInfo.$.gender": req.body.gender,
+    "customerInfo.$.updatedAt": new Date(),
+    "customerInfo.$.createdAt": req.body.createdAt,
+  }
+  )
+    .then((result) => {
+      res.redirect("/home");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+
 
 const user_view_get = (req, res) => {
   // result ==> object
@@ -58,8 +102,6 @@ const user_edit_get = (req, res) => {
     });
 };
 
-
-
 const user_delete = (req, res) => {
   var decoded = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET_KEY);
 
@@ -86,26 +128,18 @@ const user_add_get = (req, res) => {
 };
 
 
-const user_put = (req, res) => {
-  AuthUser.updateOne({ "customerInfo._id": req.params.id }, {"customerInfo.$": req.body })
-    .then((result) => {
-      res.redirect("/home");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
 
 const user_search_post = (req, res) => {
-  console.log("*******************************");
-
   const searchText = req.body.searchText.trim();
   var decoded = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET_KEY);
 
   AuthUser.findOne({ _id: decoded.id })
     .then((result) => {
-        const searchCustomers=result.customerInfo.filter((item) => {
-        return (item.firstName.includes(searchText) || item.lastName.includes(searchText))
+      const searchCustomers = result.customerInfo.filter((item) => {
+        return (
+          item.firstName.includes(searchText) ||
+          item.lastName.includes(searchText)
+        );
       });
       res.render("user/search", { arr: searchCustomers, moment: moment });
     })

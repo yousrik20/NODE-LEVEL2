@@ -31,8 +31,9 @@
   </ul>
   <hr />
   <div class="dropdown">
+    <!-- '../img/avatar.png' -->
     <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-      <img src="../img/avatar.png" alt="" width="32" height="32" class="rounded-circle me-2" />
+      <img src="<%= user.profileImage ? user.profileImage : '../img/avatar.png'%>" alt="" width="32" height="32" class="rounded-circle me-2" />
       <strong class="sidebar-text"><%= user.username %></strong>
     </a>
     <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
@@ -54,7 +55,7 @@
 <div class="b-example-divider b-example-vr"></div>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<form class="modal fade" action="/update-profile" method="post" enctype="multipart/form-data" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -66,16 +67,16 @@
           <i class="bi bi-plus"></i>
           Upload Img
         </label>
-        <input style="display: none;" id="inputFile" type="file">
-        <img id="profileImage" style="border-radius: 50%;" src="../img/avatar.png" alt="" width="150" height="150">
+        <input type="file" name="avatar" style="display: none;" id="inputFile" required>
+        <img id="profileImage" style="border-radius: 50%;" src="<%= user.profileImage ? user.profileImage : '../img/avatar.png'%>" alt="" width="150" height="150">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
-</div>
+</form>
 <script>
   inputFile.addEventListener("change", (eo) => {
     profileImage.src = URL.createObjectURL(eo.target.files[0]);

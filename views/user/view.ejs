@@ -6,7 +6,7 @@
       rel="stylesheet"
       href="../bootstrap-icons-1.10.5/font/bootstrap-icons.min.css"
     />
-    <link rel="shortcut icon" href="../img/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../img/ali.png" type="image/x-icon">
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -22,18 +22,20 @@
 
     <link rel="stylesheet" href="../css/dark-light.css">
 
+
     <!-- Custom styles for this template -->
     <link href="../css/sidebars.css" rel="stylesheet" />
     <link rel="stylesheet" href="../css/myStyle.css" />
   </head>
   <body>
-<%- include('../Components/dark-light.ejs') %>
+    <%- include('../Components/dark-light.ejs') %>
 
     <main class="d-flex flex-nowrap">
-       <%- include('../Components/sidebar.ejs',{currentPage:"view"}) %>
-     
+      <%- include('../Components/sidebar.ejs', {currentPage: "view"}) %>
+
+
       <section class="w-100">
-              <%- include('../Components/navbar.ejs') %>
+        <%- include('../Components/navbar.ejs') %>
 
         <nav
           style="width: 88%"
@@ -43,7 +45,7 @@
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/home">Home</a></li>
             <li class="breadcrumb-item active" aria-current="page">
-               <%= obj.firstName %> <%= obj.lastName %>
+              <%= obj.firstName %> <%= obj.lastName %>
             </li>
           </ol>
 
@@ -59,7 +61,7 @@
           <thead>
             <tr>
               <th scope="col">First Name</th>
-              <th class="fw-normal" scope="col"><%= obj.firstName %></th>
+              <th class="fw-normal" scope="col"> <%= obj.firstName %></th>
             </tr>
           </thead>
           <tbody>
@@ -95,12 +97,12 @@
 
             <tr>
               <th scope="row">Created on</th>
-              <td><%= moment(obj.createdAt).fromNow(); %></td>
+              <td><%= moment(obj.createdAt).fromNow();  %></td>
             </tr>
 
             <tr>
               <th scope="row">Last Update</th>
-              <td><%= moment(obj.updatedAt).fromNow(); %></td>
+              <td><%= moment(obj.updatedAt).fromNow();  %></td>
             </tr>
           </tbody>
         </table>

@@ -15,7 +15,7 @@ const addUserRoutes = require("./routes/addUser.js");
 // cookie parser middleware
 var cookieParser = require('cookie-parser')
 app.use(cookieParser())
-require("dotenv").config();
+require("dotenv").config();''
 
 app.use(express.json())
 
